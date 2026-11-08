@@ -1,0 +1,55 @@
+db.createCollection("books", {validator: {title: { $type: "string", $ne: "" }}})
+
+
+db.authors.insertOne({name: "Author1",nationality:"British"})
+
+
+db.createCollection("logs",{caped: true,size:1000000})
+
+
+db.books.createIndex({ title: 1})
+
+
+db.books.insertOne({ title: "Book1", author: "Ali", year: 1937, genres: ["Fantasy", "Adventure"]})
+
+
+db.books.insertMany([{title: "Future", author: "George Orwell", year: 2020, genres: ["Science Fiction"] }, { title: "To Kill a Mockingbird", author: "Harper Lee", year: 1960, genres: ["Classic", "Fiction"] }, { title: "Brave New World", author: "Aldous Huxley", year: 2006, genres: ["Dystopian", "Science Fiction"]}])
+
+
+db.logs.insertOne({ book_id: "64b5c2d8a123456ef8914", action: "borrowed" })
+
+
+db.books.updateOne({title: "Future"}, {$set: { year: 2022}})
+
+
+db.books.findOne({ title: "Brave New World"})
+
+
+db.books.find({ year:{ $gte: 1990, $lte: 2010}})
+
+
+db.books.find({ genres: "Science Fiction"})
+
+
+db.books.find().sort({year: -1}).skip(2).limit(3)
+
+
+db.books.find({year:{$type:"int"}})
+
+
+db.books.find({ genres:{$nin:["Horror", "Science Fiction"]}})
+
+
+db.books.deleteMany({ year: { $lt: 2000 }})
+
+
+db.books.aggregate([{ $match: { year: { $gt: 2000 }}}, { $sort: { year: -1 } }])
+
+
+db.books.aggregate([{$match: { year: { $gt: 2000 }}}, { $project: { title: 1, author: 1, year: 1, _id: 0 }}])
+
+
+db.books.aggregate([{$unwind: "$genres" }])
+
+
+db.logs.aggregate([{ $lookup: {from: "books", localField: "book_id", foreignField: "_id", as: "book_details" }}])

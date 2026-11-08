@@ -1,0 +1,1 @@
+export { default as authorsController } from "./authors.controller.js"
